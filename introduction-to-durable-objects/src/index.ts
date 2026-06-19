@@ -28,10 +28,10 @@ export class DurablePractice extends DurableObject<Env> {
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		const { pathname } = new URL(request.url);
-
+		const { pathname, searchParams } = new URL(request.url);
+		const nickname = searchParams.get('nickname') || 'anonymous';
 		if (pathname === '/') {
-			const dp = env.DurablePractice.getByName('default');
+			const dp = env.DurablePractice.getByName(nickname);
 			return new Response(await dp.increase());
 		}
 		return new Response(null, {
