@@ -1,6 +1,20 @@
 import { DurableObject } from 'cloudflare:workers';
 
 export class DurablePractice extends DurableObject<Env> {
+	constructor(ctx: DurableObjectState, env: Env) {
+		super(ctx, env);
+		ctx.storage.sql.exec(`
+			CREATE TABLE IF NOT EXISTS counts (
+				id INTEGER PRIMARY KEY AUTOINCREMENT,
+				total INTEGER
+			);
+		`);
+
+		ctx.storage.sql.exec(`
+			INSERT OR IGNORE INTO counts (id, total) VALUES (1, 0);
+		`);
+	}
+
 	count = 0;
 
 	increase() {
